@@ -10,3 +10,12 @@ class ReviewRequest(BaseModel):
     mode: str
     focus_areas: List[str]
     files: List[CodeFile]
+
+class SignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+
+class SigninRequest(BaseModel):
+    email: str
+    password: str

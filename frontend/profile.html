@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | CodeRefine AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="app-navbar">
+        <div class="nav-left">
+            <h2 class="logo" onclick="go('select.html')">CodeRefine<span>AI</span></h2>
+            <nav class="nav-links">
+                <a href="select.html" class="nav-link">Dashboard</a>
+                <a href="editor.html" class="nav-link">New Review</a>
+                <a href="history.html" class="nav-link">History</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <div class="user-menu">
+                <button class="user-btn" onclick="toggleUserMenu()">
+                    <div class="avatar" id="userAvatar">U</div>
+                    <span class="user-name" id="userName">User</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+
+                <div class="dropdown-menu hidden" id="userDropdown">
+                    <a href="profile.html" class="dropdown-item active">My Profile</a>
+                    <a href="settings.html" class="dropdown-item">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout" onclick="logout()">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Content -->
+    <main class="profile-page">
+        <div class="profile-container">
+            <div class="profile-header glass">
+                <div class="profile-avatar-large" id="profileAvatar">U</div>
+                <div class="profile-info">
+                    <h1 id="profileName">User Name</h1>
+                    <p id="profileEmail">user@email.com</p>
+                    <span class="member-badge">Member since 2026</span>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <div class="profile-section glass">
+                    <h3>Personal Information</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" placeholder="Your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Your email" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="bio">Bio</label>
+                            <textarea id="bio" placeholder="Tell us about yourself..." rows="3"></textarea>
+                        </div>
+                        <button type="button" class="btn" onclick="saveProfile()">Save Changes</button>
+                    </form>
+                </div>
+
+                <div class="profile-section glass">
+                    <h3>Account Statistics</h3>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <span class="stat-value" id="reviewCount">0</span>
+                            <span class="stat-label">Reviews</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="stat-value" id="fileCount">0</span>
+                            <span class="stat-label">Files Analyzed</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="stat-value" id="issueCount">0</span>
+                            <span class="stat-label">Issues Found</span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 24px;">Danger Zone</h3>
+                    <p class="danger-text">Once you delete your account, there is no going back.</p>
+                    <button class="btn danger" onclick="confirmDelete()">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadProfile();
+            loadStats();
+        });
+
+        function loadProfile() {
+            const userName = localStorage.getItem('user_name') || 'User';
+            const userEmail = localStorage.getItem('user_email') || 'user@coderefine.ai';
+            const initial = userName.charAt(0).toUpperCase();
+
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userAvatar').textContent = initial;
+            document.getElementById('profileAvatar').textContent = initial;
+            document.getElementById('profileName').textContent = userName;
+            document.getElementById('profileEmail').textContent = userEmail;
+            document.getElementById('fullName').value = userName;
+            document.getElementById('email').value = userEmail;
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch('http://127.0.0.1:8000/history');
+                const history = await res.json();
+                document.getElementById('reviewCount').textContent = history.length;
+                document.getElementById('fileCount').textContent = history.length;
+                document.getElementById('issueCount').textContent = history.length * 3;
+            } catch (e) { }
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('fullName').value;
+            localStorage.setItem('user_name', name);
+            alert('Profile saved!');
+            loadProfile();
+        }
+
+        function confirmDelete() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('userDropdown').classList.toggle('hidden');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!document.querySelector('.user-menu').contains(e.target)) {
+                document.getElementById('userDropdown').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

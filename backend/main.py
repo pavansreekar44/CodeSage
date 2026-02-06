@@ -6,11 +6,12 @@ from groq import Groq
 import os, json
 from datetime import datetime
 import difflib
-from models import Rewrite
+from models import Rewrite, User
+import bcrypt
 
 from database import SessionLocal, engine
 from models import Base, Review, ReviewFile, ReviewIssue
-from schemas import ReviewRequest
+from schemas import ReviewRequest, SignupRequest, SigninRequest
 
 # ---------------- INIT ----------------
 
@@ -42,6 +43,39 @@ def get_db():
 @app.get("/")
 def health():
     return {"status": "Backend running"}
+
+# ---------------- AUTH ROUTES ----------------
+
+@app.post("/signup")
+def signup(request: SignupRequest, db: Session = Depends(get_db)):
+    # Check if user already exists
+    existing_user = db.query(User).filter(User.email == request.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Hash the password
+    password_hash = bcrypt.hashpw(request.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    # Create new user
+    user = User(name=request.name, email=request.email, password_hash=password_hash)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    return {"message": "User created successfully", "user_id": user.id, "name": user.name}
+
+@app.post("/signin")
+def signin(request: SigninRequest, db: Session = Depends(get_db)):
+    # Find user by email
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Verify password
+    if not bcrypt.checkpw(request.password.encode('utf-8'), user.password_hash.encode('utf-8')):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    return {"message": "Login successful", "user_id": user.id, "name": user.name}
 
 @app.post("/review")
 def review_code(request: ReviewRequest, db: Session = Depends(get_db)):
@@ -232,9 +266,23 @@ def get_review(review_id: int, db: Session = Depends(get_db)):
         ReviewIssue.review_id == review_id
     ).all()
 
+    files = db.query(ReviewFile).filter(
+        ReviewFile.review_id == review_id
+    ).all()
+
     return {
         "id": review.id,
+        "language": review.language,
+        "mode": review.mode,
         "summary": review.summary,
+        "created_at": review.created_at,
+        "files": [
+            {
+                "filename": f.filename,
+                "content": f.content
+            }
+            for f in files
+        ],
         "issues": [
             {
                 "severity": i.severity,

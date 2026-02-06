@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | CodeRefine AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="app-navbar">
+        <div class="nav-left">
+            <h2 class="logo" onclick="go('select.html')">CodeRefine<span>AI</span></h2>
+            <nav class="nav-links">
+                <a href="select.html" class="nav-link">Dashboard</a>
+                <a href="editor.html" class="nav-link">New Review</a>
+                <a href="history.html" class="nav-link">History</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <div class="user-menu">
+                <button class="user-btn" onclick="toggleUserMenu()">
+                    <div class="avatar" id="userAvatar">U</div>
+                    <span class="user-name" id="userName">User</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+
+                <div class="dropdown-menu hidden" id="userDropdown">
+                    <a href="profile.html" class="dropdown-item">My Profile</a>
+                    <a href="settings.html" class="dropdown-item active">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout" onclick="logout()">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Settings Content -->
+    <main class="settings-page">
+        <div class="settings-container">
+            <h1>Settings</h1>
+            <p class="settings-subtitle">Customize your CodeRefine experience</p>
+
+            <div class="settings-grid">
+                <!-- Preferences -->
+                <div class="settings-section glass">
+                    <h3>Preferences</h3>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-title">Default Review Mode</span>
+                            <span class="setting-desc">Choose your default code review mode</span>
+                        </div>
+                        <select id="defaultMode">
+                            <option value="bug">Bug Detection</option>
+                            <option value="security">Security Analysis</option>
+                            <option value="performance">Performance Review</option>
+                            <option value="best_practices">Best Practices</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-title">Default Language</span>
+                            <span class="setting-desc">Your most used programming language</span>
+                        </div>
+                        <select id="defaultLang">
+                            <option value="C">C</option>
+                            <option value="Python">Python</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Java">Java</option>
+                            <option value="TypeScript">TypeScript</option>
+                            <option value="Go">Go</option>
+                            <option value="Rust">Rust</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Appearance -->
+                <div class="settings-section glass">
+                    <h3>Appearance</h3>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-title">Theme</span>
+                            <span class="setting-desc">Choose your preferred theme</span>
+                        </div>
+                        <select id="theme">
+                            <option value="dark">Dark Mode</option>
+                            <option value="light" disabled>Light Mode (Coming Soon)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-title">Editor Font Size</span>
+                            <span class="setting-desc">Adjust the code editor font size</span>
+                        </div>
+                        <select id="fontSize">
+                            <option value="12">12px</option>
+                            <option value="14" selected>14px</option>
+                            <option value="16">16px</option>
+                            <option value="18">18px</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-section glass">
+                    <h3>Notifications</h3>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-title">Email Notifications</span>
+                            <span class="setting-desc">Receive review summaries via email</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="emailNotif">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-title">Browser Notifications</span>
+                            <span class="setting-desc">Get notified when reviews complete</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="browserNotif" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- API -->
+                <div class="settings-section glass">
+                    <h3>API Settings</h3>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-title">API Key</span>
+                            <span class="setting-desc">Your personal API key for integrations</span>
+                        </div>
+                        <div class="api-key-display">
+                            <input type="password" id="apiKey" value="sk-xxxxxxxxxxxxxxxxxx" readonly>
+                            <button class="btn outline small" onclick="toggleApiKey()">Show</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-actions">
+                <button class="btn" onclick="saveSettings()">Save Settings</button>
+                <button class="btn outline" onclick="resetSettings()">Reset to Defaults</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserInfo();
+            loadSettings();
+        });
+
+        function loadUserInfo() {
+            const userName = localStorage.getItem('user_name') || 'User';
+            const initial = userName.charAt(0).toUpperCase();
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userAvatar').textContent = initial;
+        }
+
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+            if (settings.defaultMode) document.getElementById('defaultMode').value = settings.defaultMode;
+            if (settings.defaultLang) document.getElementById('defaultLang').value = settings.defaultLang;
+            if (settings.fontSize) document.getElementById('fontSize').value = settings.fontSize;
+            if (settings.emailNotif !== undefined) document.getElementById('emailNotif').checked = settings.emailNotif;
+            if (settings.browserNotif !== undefined) document.getElementById('browserNotif').checked = settings.browserNotif;
+        }
+
+        function saveSettings() {
+            const settings = {
+                defaultMode: document.getElementById('defaultMode').value,
+                defaultLang: document.getElementById('defaultLang').value,
+                fontSize: document.getElementById('fontSize').value,
+                emailNotif: document.getElementById('emailNotif').checked,
+                browserNotif: document.getElementById('browserNotif').checked
+            };
+            localStorage.setItem('settings', JSON.stringify(settings));
+            alert('Settings saved!');
+        }
+
+        function resetSettings() {
+            if (confirm('Reset all settings to defaults?')) {
+                localStorage.removeItem('settings');
+                location.reload();
+            }
+        }
+
+        function toggleApiKey() {
+            const input = document.getElementById('apiKey');
+            const btn = event.target;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                input.type = 'password';
+                btn.textContent = 'Show';
+            }
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('userDropdown').classList.toggle('hidden');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!document.querySelector('.user-menu').contains(e.target)) {
+                document.getElementById('userDropdown').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

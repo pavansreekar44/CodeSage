@@ -1,67 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Editor | CodeRefine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor | CodeRefine AI</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<header class="navbar">
-  <h2>CodeRefine<span>AI</span></h2>
-  <button class="btn outline" onclick="go('select.html')">Close</button>
-</header>
-
-<section class="editor">
-
-  <div class="editor-main glass">
-    <h3>Paste Your Code</h3>
-
-    <!-- Multi-file upload -->
-    <input type="file" id="fileInput" multiple />
-
-    <!-- Code input -->
-    <textarea
-      id="codeInput"
-      class="big-textarea"
-      placeholder="Paste your code here...">
-    </textarea>
-
-    <!-- Review mode -->
-    <select id="mode">
-      <option value="bug">Bug Detection</option>
-      <option value="security">Security</option>
-      <option value="performance">Performance</option>
-      <option value="best_practices">Best Practices</option>
-    </select>
-
-    <div class="actions">
-      <button class="btn" onclick="reviewCode()">Review</button>
-      <button class="btn" onclick="rewriteCode()">Rewrite & Optimize</button>
-      <button class="btn" onclick="openWindow('explain')">Explanation</button>
-    </div>
-  </div>
-
-  <div class="windows">
-    <div class="window glass hidden" id="review">
-      <h4>AI Review</h4>
-      <p>Run a review to see results.</p>
+  <!-- Top Navigation Bar -->
+  <header class="app-navbar">
+    <div class="nav-left">
+      <h2 class="logo" onclick="go('select.html')">CodeRefine<span>AI</span></h2>
+      <nav class="nav-links">
+        <a href="select.html" class="nav-link">Dashboard</a>
+        <a href="editor.html" class="nav-link active">New Review</a>
+        <a href="history.html" class="nav-link">History</a>
+      </nav>
     </div>
 
-    <div class="window glass hidden" id="optimize">
-      <h4>Optimized Code</h4>
-      <pre></pre>
+    <div class="nav-right">
+      <div class="user-menu">
+        <button class="user-btn" onclick="toggleUserMenu()">
+          <div class="avatar" id="userAvatar">U</div>
+          <span class="user-name" id="userName">User</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
+
+        <div class="dropdown-menu hidden" id="userDropdown">
+          <a href="profile.html" class="dropdown-item">My Profile</a>
+          <a href="settings.html" class="dropdown-item">Settings</a>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item logout" onclick="logout()">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="editor">
+
+    <div class="editor-main glass">
+      <h3>Paste Your Code</h3>
+
+      <!-- Multi-file upload -->
+      <input type="file" id="fileInput" multiple />
+
+      <!-- Code input with line numbers -->
+      <div class="editor-container">
+        <div class="line-numbers-container">
+          <div id="lineNumbers" class="line-numbers">1</div>
+          <textarea id="codeInput" class="big-textarea with-lines" placeholder="Paste your code here..."
+            oninput="updateLineNumbers()" onscroll="syncScroll()">
+        </textarea>
+        </div>
+      </div>
+
+      <!-- Review mode -->
+      <select id="mode">
+        <option value="bug">Bug Detection</option>
+        <option value="security">Security Analysis</option>
+        <option value="performance">Performance Review</option>
+        <option value="best_practices">Best Practices</option>
+      </select>
+
+      <div class="actions">
+        <button class="btn" onclick="reviewCode()">Review</button>
+        <button class="btn" onclick="rewriteCode()">Rewrite & Optimize</button>
+        <button class="btn outline" onclick="openWindow('explain')">Explanation</button>
+      </div>
     </div>
 
-    <div class="window glass hidden" id="explain">
-      <h4>Explanation</h4>
-      <p>Explanation feature coming soon.</p>
+    <div class="windows">
+      <div class="window glass hidden" id="review">
+        <h4>AI Review</h4>
+        <p>Run a review to see results.</p>
+      </div>
+
+      <div class="window glass hidden" id="optimize">
+        <h4>Optimized Code</h4>
+        <pre></pre>
+      </div>
+
+      <div class="window glass hidden" id="explain">
+        <h4>Explanation</h4>
+        <p>Explanation feature coming soon.</p>
+      </div>
     </div>
-  </div>
 
-</section>
+  </section>
 
-<!-- IMPORTANT: load JS -->
-<script src="script.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+      loadUserInfo();
+      updateLineNumbers();
+    });
+
+    function loadUserInfo() {
+      const userName = localStorage.getItem('user_name') || 'User';
+      const initial = userName.charAt(0).toUpperCase();
+      document.getElementById('userName').textContent = userName;
+      document.getElementById('userAvatar').textContent = initial;
+    }
+
+    function updateLineNumbers() {
+      const textarea = document.getElementById('codeInput');
+      const lineNumbersDiv = document.getElementById('lineNumbers');
+
+      const lines = textarea.value.split('\n');
+      const lineCount = lines.length || 1;
+
+      let lineNumbersHtml = '';
+      for (let i = 1; i <= lineCount; i++) {
+        lineNumbersHtml += i + '\n';
+      }
+
+      lineNumbersDiv.textContent = lineNumbersHtml.trim();
+    }
+
+    function syncScroll() {
+      const textarea = document.getElementById('codeInput');
+      const lineNumbers = document.getElementById('lineNumbers');
+      lineNumbers.scrollTop = textarea.scrollTop;
+    }
+
+    function toggleUserMenu() {
+      document.getElementById('userDropdown').classList.toggle('hidden');
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!document.querySelector('.user-menu').contains(e.target)) {
+        document.getElementById('userDropdown').classList.add('hidden');
+      }
+    });
+  </script>
 </body>
+
 </html>

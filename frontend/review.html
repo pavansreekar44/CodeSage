@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Details | CodeRefine AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <h2>CodeRefine<span>AI</span></h2>
+        <button class="btn outline" onclick="go('history.html')">Back to History</button>
+    </header>
+
+    <section class="review-detail">
+        <div id="loading" class="loading-container">
+            <p>Loading review...</p>
+        </div>
+
+        <div id="content" class="review-content hidden">
+            <!-- Header -->
+            <div class="review-header glass">
+                <div class="review-header-top">
+                    <h2>Review #<span id="reviewId"></span></h2>
+                    <span id="reviewMode" class="mode-badge"></span>
+                </div>
+                <p id="reviewDate" class="review-date"></p>
+            </div>
+
+            <!-- Two column layout -->
+            <div class="review-grid">
+                <!-- Code Panel -->
+                <div class="code-panel glass">
+                    <h3>Original Code</h3>
+                    <div id="codeFiles"></div>
+                </div>
+
+                <!-- Analysis Panel -->
+                <div class="analysis-panel glass">
+                    <h3>AI Analysis</h3>
+                    <div id="analysisSummary" class="summary-box"></div>
+                    <div id="issuesList"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadReviewDetail);
+
+        async function loadReviewDetail() {
+            const reviewId = localStorage.getItem("review_id");
+
+            if (!reviewId) {
+                document.getElementById("loading").innerHTML = '<p>No review selected. <a href="history.html">Go to history</a></p>';
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://127.0.0.1:8000/history/${reviewId}`);
+
+                if (!res.ok) {
+                    throw new Error("Review not found");
+                }
+
+                const data = await res.json();
+                renderReview(data);
+
+            } catch (error) {
+                document.getElementById("loading").innerHTML = '<p>Unable to load review. <a href="history.html">Go back</a></p>';
+            }
+        }
+
+        function renderReview(data) {
+            // Hide loading, show content
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("content").classList.remove("hidden");
+
+            // Header info
+            document.getElementById("reviewId").textContent = data.id;
+            document.getElementById("reviewMode").textContent = data.mode;
+            document.getElementById("reviewDate").textContent = new Date(data.created_at).toLocaleString();
+
+            // Render code files with line numbers
+            const codeContainer = document.getElementById("codeFiles");
+            if (data.files && data.files.length > 0) {
+                data.files.forEach(file => {
+                    const fileDiv = document.createElement("div");
+                    fileDiv.className = "code-file";
+
+                    const lines = file.content.split('\n');
+                    const numberedLines = lines.map((line, i) =>
+                        `<span class="line-number">${i + 1}</span>${escapeHtml(line)}`
+                    ).join('\n');
+
+                    fileDiv.innerHTML = `
+          <h4>${escapeHtml(file.filename)}</h4>
+          <pre class="code-with-lines">${numberedLines}</pre>
+        `;
+                    codeContainer.appendChild(fileDiv);
+                });
+            } else {
+                codeContainer.innerHTML = '<p>No code files found</p>';
+            }
+
+            // Render summary
+            document.getElementById("analysisSummary").innerHTML = `
+      <h4>Summary</h4>
+      <p>${escapeHtml(data.summary)}</p>
+    `;
+
+            // Render issues
+            const issuesContainer = document.getElementById("issuesList");
+            const severityOrder = ['serious_bugs', 'high_priority', 'medium_priority', 'low_priority'];
+            const severityLabels = {
+                'serious_bugs': 'Serious Bugs',
+                'high_priority': 'High Priority',
+                'medium_priority': 'Medium Priority',
+                'low_priority': 'Low Priority'
+            };
+            const severityClasses = {
+                'serious_bugs': 'priority-serious',
+                'high_priority': 'priority-high',
+                'medium_priority': 'priority-medium',
+                'low_priority': 'priority-low'
+            };
+
+            // Group issues by severity
+            const issuesBySeverity = {};
+            data.issues.forEach(issue => {
+                if (!issuesBySeverity[issue.severity]) {
+                    issuesBySeverity[issue.severity] = [];
+                }
+                issuesBySeverity[issue.severity].push(issue);
+            });
+
+            let issuesHtml = '';
+            severityOrder.forEach(severity => {
+                const issues = issuesBySeverity[severity];
+                if (issues && issues.length > 0) {
+                    issuesHtml += `<div class="issue-group">
+          <h4 class="${severityClasses[severity]}">${severityLabels[severity]}</h4>
+          <ul>`;
+                    issues.forEach(issue => {
+                        issuesHtml += `<li>
+            <strong>${escapeHtml(issue.file)}</strong> (line ${issue.line})<br>
+            ${escapeHtml(issue.issue)}
+          </li>`;
+                    });
+                    issuesHtml += '</ul></div>';
+                }
+            });
+
+            if (issuesHtml) {
+                issuesContainer.innerHTML = issuesHtml;
+            } else {
+                issuesContainer.innerHTML = '<p class="no-issues">No issues found - great code!</p>';
+            }
+        }
+    </script>
+</body>
+
+</html>

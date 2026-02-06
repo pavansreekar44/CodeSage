@@ -1,32 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Select CodePad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | CodeRefine AI</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="center">
 
-<div class="card glass">
-  <h2>CodePad</h2>
+<body>
 
-  <button class="btn full" onclick="go('editor.html')">
-    ➕ New CodePad
-  </button>
+  <!-- Top Navigation Bar -->
+  <header class="app-navbar">
+    <div class="nav-left">
+      <h2 class="logo" onclick="go('select.html')">CodeRefine<span>AI</span></h2>
+      <nav class="nav-links">
+        <a href="select.html" class="nav-link active">Dashboard</a>
+        <a href="editor.html" class="nav-link">New Review</a>
+        <a href="history.html" class="nav-link">History</a>
+      </nav>
+    </div>
 
-  <button class="btn outline full" onclick="toggleHistory()">
-    📜 View History
-  </button>
+    <div class="nav-right">
+      <button class="icon-btn" title="Notifications">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+      </button>
 
-  <!-- <ul id="history" class="list hidden">
-    <li onclick="go('editor.html')">Python Review</li>
-    <li onclick="go('editor.html')">Java Optimize</li>
-    <li onclick="go('editor.html')">JS Explanation</li>
-  </ul> -->
-  <ul id="history" class="list hidden"></ul>
+      <div class="user-menu">
+        <button class="user-btn" onclick="toggleUserMenu()">
+          <div class="avatar" id="userAvatar">U</div>
+          <span class="user-name" id="userName">User</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
 
-</div>
+        <div class="dropdown-menu hidden" id="userDropdown">
+          <div class="dropdown-header">
+            <div class="avatar-lg" id="dropdownAvatar">U</div>
+            <div class="dropdown-user-info">
+              <span class="dropdown-name" id="dropdownName">User</span>
+              <span class="dropdown-email" id="dropdownEmail">user@email.com</span>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a href="profile.html" class="dropdown-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            My Profile
+          </a>
+          <a href="settings.html" class="dropdown-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            Settings
+          </a>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item logout" onclick="logout()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16,17 21,12 16,7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-<script src="script.js"></script>
+  <!-- Main Dashboard Content -->
+  <main class="dashboard">
+    <div class="dashboard-header">
+      <h1>Welcome back, <span id="welcomeName">User</span>!</h1>
+      <p>What would you like to review today?</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Quick Actions Card -->
+      <div class="dashboard-card glass primary-card" onclick="go('editor.html')">
+        <div class="card-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </div>
+        <h3>New Code Review</h3>
+        <p>Start a new AI-powered code analysis</p>
+      </div>
+
+      <div class="dashboard-card glass" onclick="go('history.html')">
+        <div class="card-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12,6 12,12 16,14" />
+          </svg>
+        </div>
+        <h3>View History</h3>
+        <p>Browse your previous code reviews</p>
+      </div>
+
+      <div class="dashboard-card glass" onclick="go('profile.html')">
+        <div class="card-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
+        <h3>My Profile</h3>
+        <p>Manage your account settings</p>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-section">
+      <h2>Your Stats</h2>
+      <div class="stats-grid">
+        <div class="stat-card glass">
+          <span class="stat-number" id="totalReviews">-</span>
+          <span class="stat-label">Total Reviews</span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-number" id="bugsFound">-</span>
+          <span class="stat-label">Bugs Found</span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-number" id="codeOptimized">-</span>
+          <span class="stat-label">Files Optimized</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function () {
+      loadUserInfo();
+      loadStats();
+    });
+
+    function loadUserInfo() {
+      const userName = localStorage.getItem('user_name') || 'User';
+      const userEmail = localStorage.getItem('user_email') || '';
+      const initial = userName.charAt(0).toUpperCase();
+
+      document.getElementById('userName').textContent = userName;
+      document.getElementById('welcomeName').textContent = userName;
+      document.getElementById('userAvatar').textContent = initial;
+      document.getElementById('dropdownAvatar').textContent = initial;
+      document.getElementById('dropdownName').textContent = userName;
+      document.getElementById('dropdownEmail').textContent = userEmail || 'user@coderefine.ai';
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch('http://127.0.0.1:8000/history');
+        const history = await res.json();
+
+        document.getElementById('totalReviews').textContent = history.length;
+        document.getElementById('bugsFound').textContent = history.length * 3; // Placeholder
+        document.getElementById('codeOptimized').textContent = history.length;
+      } catch (error) {
+        document.getElementById('totalReviews').textContent = '0';
+        document.getElementById('bugsFound').textContent = '0';
+        document.getElementById('codeOptimized').textContent = '0';
+      }
+    }
+
+    function toggleUserMenu() {
+      const dropdown = document.getElementById('userDropdown');
+      dropdown.classList.toggle('hidden');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+      const userMenu = document.querySelector('.user-menu');
+      const dropdown = document.getElementById('userDropdown');
+
+      if (!userMenu.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_email');
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
+
 </html>

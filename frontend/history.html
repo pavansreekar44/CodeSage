@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History | CodeRefine AI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="app-navbar">
+        <div class="nav-left">
+            <h2 class="logo" onclick="go('select.html')">CodeRefine<span>AI</span></h2>
+            <nav class="nav-links">
+                <a href="select.html" class="nav-link">Dashboard</a>
+                <a href="editor.html" class="nav-link">New Review</a>
+                <a href="history.html" class="nav-link active">History</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <div class="user-menu">
+                <button class="user-btn" onclick="toggleUserMenu()">
+                    <div class="avatar" id="userAvatar">U</div>
+                    <span class="user-name" id="userName">User</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+
+                <div class="dropdown-menu hidden" id="userDropdown">
+                    <a href="profile.html" class="dropdown-item">My Profile</a>
+                    <a href="settings.html" class="dropdown-item">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout" onclick="logout()">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="history-page">
+        <div class="history-container glass">
+            <h2>Review History</h2>
+            <p class="history-subtitle">Your previous code reviews</p>
+
+            <div id="historyList" class="history-list">
+                <p class="loading">Loading history...</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserInfo();
+            loadHistoryPage();
+        });
+
+        function loadUserInfo() {
+            const userName = localStorage.getItem('user_name') || 'User';
+            const initial = userName.charAt(0).toUpperCase();
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userAvatar').textContent = initial;
+        }
+
+        async function loadHistoryPage() {
+            const container = document.getElementById('historyList');
+
+            try {
+                const res = await fetch('http://127.0.0.1:8000/history');
+                const history = await res.json();
+
+                if (history.length === 0) {
+                    container.innerHTML = '<p class="empty-state">No reviews yet. Start by creating a new CodePad!</p>';
+                    return;
+                }
+
+                let html = '';
+                history.forEach(h => {
+                    const date = new Date(h.created_at).toLocaleString();
+                    html += `
+          <div class="history-card" onclick="openReview(${h.id})">
+            <div class="history-card-header">
+              <span class="history-id">#${h.id}</span>
+              <span class="history-mode">${h.mode}</span>
+            </div>
+            <p class="history-summary">${escapeHtml(h.summary)}</p>
+            <div class="history-meta">
+              <span class="history-lang">${h.language}</span>
+              <span class="history-date">${date}</span>
+            </div>
+          </div>
+        `;
+                });
+
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = '<p class="error-state">Unable to load history. Please make sure the backend is running.</p>';
+            }
+        }
+
+        function openReview(id) {
+            localStorage.setItem("review_id", id);
+            window.location.href = "review.html";
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('userDropdown').classList.toggle('hidden');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!document.querySelector('.user-menu').contains(e.target)) {
+                document.getElementById('userDropdown').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

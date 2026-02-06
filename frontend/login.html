@@ -1,27 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Login | CodeRefine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | CodeRefine AI</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="center">
 
-<div class="card glass">
-  <h2 id="formTitle">Login</h2>
+  <div class="card glass">
+    <h2 id="formTitle">Login</h2>
 
-  <input id="name" class="hidden" placeholder="Full Name">
-  <input placeholder="Email">
-  <input type="password" placeholder="Password">
+    <div id="errorMsg" class="error-message hidden"></div>
 
-  <button class="btn" onclick="go('select.html')" id="submitBtn">Login</button>
+    <input id="name" class="hidden" placeholder="Full Name">
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
 
-  <p class="switch">
-    <span id="switchText">Don’t have an account?</span>
-    <a href="#" onclick="toggleAuth()">Create Account</a>
-  </p>
-</div>
+    <button class="btn full" onclick="handleAuth()" id="submitBtn">Login</button>
 
-<script src="script.js"></script>
+    <p class="switch">
+      <span id="switchText">Don't have an account?</span>
+      <a href="#" onclick="toggleAuth(); return false;">Create Account</a>
+    </p>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    let isSignup = false;
+
+    function toggleAuth() {
+      isSignup = !isSignup;
+      const nameField = document.getElementById("name");
+      const formTitle = document.getElementById("formTitle");
+      const submitBtn = document.getElementById("submitBtn");
+      const switchText = document.getElementById("switchText");
+      const switchLink = document.querySelector(".switch a");
+
+      // Clear any error messages
+      hideError();
+
+      if (isSignup) {
+        nameField.classList.remove("hidden");
+        formTitle.innerText = "Create Account";
+        submitBtn.innerText = "Sign Up";
+        switchText.innerText = "Already have an account?";
+        switchLink.innerText = "Login";
+      } else {
+        nameField.classList.add("hidden");
+        formTitle.innerText = "Login";
+        submitBtn.innerText = "Login";
+        switchText.innerText = "Don't have an account?";
+        switchLink.innerText = "Create Account";
+      }
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById("errorMsg");
+      errorDiv.textContent = message;
+      errorDiv.classList.remove("hidden");
+    }
+
+    function hideError() {
+      document.getElementById("errorMsg").classList.add("hidden");
+    }
+
+    async function handleAuth() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const submitBtn = document.getElementById("submitBtn");
+
+      // Validation
+      if (!email || !password) {
+        showError("Please fill in all fields");
+        return;
+      }
+
+      if (isSignup && !name) {
+        showError("Please enter your name");
+        return;
+      }
+
+      hideError();
+      submitBtn.disabled = true;
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = isSignup ? "Creating account..." : "Logging in...";
+
+      try {
+        const endpoint = isSignup ? "/signup" : "/signin";
+
+        // Build request body
+        const body = isSignup
+          ? { name, email, password }
+          : { email, password };
+
+        const res = await fetch(`http://127.0.0.1:8000${endpoint}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          showError(data.detail || "Authentication failed");
+          submitBtn.disabled = false;
+          submitBtn.innerText = originalText;
+          return;
+        }
+
+        // Store user info in localStorage
+        localStorage.setItem("user_id", data.user_id);
+        localStorage.setItem("user_name", data.name);
+
+        // Redirect to select page
+        window.location.href = "select.html";
+
+      } catch (error) {
+        console.error("Auth error:", error);
+        showError("Unable to connect to server. Please make sure the backend is running.");
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalText;
+      }
+    }
+
+    // Allow pressing Enter to submit
+    document.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        handleAuth();
+      }
+    });
+  </script>
 </body>
+
 </html>
