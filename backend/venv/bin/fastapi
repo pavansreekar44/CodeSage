@@ -1,4 +1,4 @@
-#!/home/b-v-s-pavan-sreekar/NASSCOM/ai-code-review/venv/bin/python
+#!/home/b-v-s-pavan-sreekar/NASSCOM/backend/venv/bin/python3
 import sys
 from fastapi.cli import main
 if __name__ == '__main__':

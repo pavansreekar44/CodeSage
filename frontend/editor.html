@@ -16,11 +16,28 @@
 
   <div class="editor-main glass">
     <h3>Paste Your Code</h3>
-    <textarea class="big-textarea" placeholder="Paste your code here..."></textarea>
+
+    <!-- Multi-file upload -->
+    <input type="file" id="fileInput" multiple />
+
+    <!-- Code input -->
+    <textarea
+      id="codeInput"
+      class="big-textarea"
+      placeholder="Paste your code here...">
+    </textarea>
+
+    <!-- Review mode -->
+    <select id="mode">
+      <option value="bug">Bug Detection</option>
+      <option value="security">Security</option>
+      <option value="performance">Performance</option>
+      <option value="best_practices">Best Practices</option>
+    </select>
 
     <div class="actions">
-      <button class="btn" onclick="openWindow('review')">Review</button>
-      <button class="btn" onclick="openWindow('optimize')">Rewrite & Optimize</button>
+      <button class="btn" onclick="reviewCode()">Review</button>
+      <button class="btn" onclick="rewriteCode()">Rewrite & Optimize</button>
       <button class="btn" onclick="openWindow('explain')">Explanation</button>
     </div>
   </div>
@@ -28,12 +45,23 @@
   <div class="windows">
     <div class="window glass hidden" id="review">
       <h4>AI Review</h4>
-      <p>❌ Infinite loop detected<br>⚠️ Unhandled exception</p>
+      <p>Run a review to see results.</p>
     </div>
 
     <div class="window glass hidden" id="optimize">
       <h4>Optimized Code</h4>
-      <pre>def optimized(): pass</pre>
+      <pre></pre>
     </div>
 
-    <d
+    <div class="window glass hidden" id="explain">
+      <h4>Explanation</h4>
+      <p>Explanation feature coming soon.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- IMPORTANT: load JS -->
+<script src="script.js"></script>
+</body>
+</html>
