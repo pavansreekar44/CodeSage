@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | CodeRefine</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">CodeRefine<span>AI</span></div>
+  <button class="primary-btn" onclick="logout()">Logout</button>
+</header>
+
+<section class="dashboard">
+
+  <div class="panel glass">
+    <h2>1️⃣ Paste Code</h2>
+
+    <select class="dropdown">
+      <option>Select Language</option>
+      <option>Python</option>
+      <option>Java</option>
+      <option>C++</option>
+      <option>JavaScript</option>
+    </select>
+
+    <textarea placeholder="Paste your code here..."></textarea>
+    <button class="primary-btn">Review Code</button>
+  </div>
+
+  <div class="panel glass">
+    <h2>2️⃣ AI Review</h2>
+
+    <div class="review critical">❌ Critical: Infinite loop detected</div>
+    <div class="review high">⚠️ High: Unhandled exception</div>
+    <div class="review medium">ℹ️ Medium: Code duplication</div>
+
+    <button class="primary-btn">Rewrite & Optimize</button>
+  </div>
+
+  <div class="panel glass">
+    <h2>3️⃣ Optimized Output</h2>
+
+    <pre class="code-output">
+def optimized_function():
+    print("Optimized code here")
+    </pre>
+
+    <button class="primary-btn">Copy Code</button>
+  </div>
+
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
