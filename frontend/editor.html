@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Editor | CodeRefine</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="navbar">
+  <h2>CodeRefine<span>AI</span></h2>
+  <button class="btn outline" onclick="go('select.html')">Close</button>
+</header>
+
+<section class="editor">
+
+  <div class="editor-main glass">
+    <h3>Paste Your Code</h3>
+    <textarea class="big-textarea" placeholder="Paste your code here..."></textarea>
+
+    <div class="actions">
+      <button class="btn" onclick="openWindow('review')">Review</button>
+      <button class="btn" onclick="openWindow('optimize')">Rewrite & Optimize</button>
+      <button class="btn" onclick="openWindow('explain')">Explanation</button>
+    </div>
+  </div>
+
+  <div class="windows">
+    <div class="window glass hidden" id="review">
+      <h4>AI Review</h4>
+      <p>❌ Infinite loop detected<br>⚠️ Unhandled exception</p>
+    </div>
+
+    <div class="window glass hidden" id="optimize">
+      <h4>Optimized Code</h4>
+      <pre>def optimized(): pass</pre>
+    </div>
+
+    <d
