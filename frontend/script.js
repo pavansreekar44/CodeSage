@@ -1,15 +1,20 @@
-function goToLogin() {
-  window.location.href = "login.html";
+function go(page) {
+  window.location.href = page;
 }
 
-function loginSuccess() {
-  window.location.href = "dashboard.html";
+function toggleAuth() {
+  document.getElementById("name").classList.toggle("hidden");
+  document.getElementById("formTitle").innerText =
+    document.getElementById("formTitle").innerText === "Login"
+      ? "Create Account"
+      : "Login";
 }
 
-function logout() {
-  window.location.href = "index.html";
+function toggleHistory() {
+  document.getElementById("history").classList.toggle("hidden");
 }
 
-function toggleForm() {
-  document.getElementById("signup").classList.toggle("hidden");
+function openWindow(id) {
+  document.querySelectorAll(".window").forEach(w => w.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }

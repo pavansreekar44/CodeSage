@@ -5,27 +5,21 @@
   <title>Login | CodeRefine</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="auth-body">
+<body class="center">
 
-<div class="auth-container glass">
-  <h2>Welcome Back 👋</h2>
+<div class="card glass">
+  <h2 id="formTitle">Login</h2>
 
-  <input type="email" placeholder="Email">
+  <input id="name" class="hidden" placeholder="Full Name">
+  <input placeholder="Email">
   <input type="password" placeholder="Password">
 
-  <button class="primary-btn" onclick="loginSuccess()">Login</button>
+  <button class="btn" onclick="go('select.html')" id="submitBtn">Login</button>
 
   <p class="switch">
-    Don’t have an account?
-    <a href="#" onclick="toggleForm()">Create one</a>
+    <span id="switchText">Don’t have an account?</span>
+    <a href="#" onclick="toggleAuth()">Create Account</a>
   </p>
-
-  <div id="signup" class="hidden">
-    <input type="text" placeholder="Full Name">
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
-    <button class="primary-btn">Create Account</button>
-  </div>
 </div>
 
 <script src="script.js"></script>

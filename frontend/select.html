@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select CodePad</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="center">
+
+<div class="card glass">
+  <h2>CodePad</h2>
+
+  <button class="btn full" onclick="go('editor.html')">
+    ➕ New CodePad
+  </button>
+
+  <button class="btn outline full" onclick="toggleHistory()">
+    📜 View History
+  </button>
+
+  <ul id="history" class="list hidden">
+    <li onclick="go('editor.html')">Python Review</li>
+    <li onclick="go('editor.html')">Java Optimize</li>
+    <li onclick="go('editor.html')">JS Explanation</li>
+  </ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

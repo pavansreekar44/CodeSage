@@ -6,173 +6,118 @@
 }
 
 body {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background: linear-gradient(135deg,#0f172a,#1e293b);
   color: #e5e7eb;
 }
 
-/* NAVBAR */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 60px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-}
+span { color: #38bdf8; }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.logo span {
-  color: #38bdf8;
-}
-
-.navbar a {
-  margin-right: 20px;
-  color: #e5e7eb;
-  text-decoration: none;
-}
-
-/* BUTTON */
-.primary-btn {
-  background: linear-gradient(135deg, #2563eb, #38bdf8);
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.primary-btn:hover {
-  transform: scale(1.05);
-}
-
-/* HERO */
-.hero {
-  padding: 100px 60px;
-}
-
-.hero-text h1 {
-  font-size: 48px;
-  margin-bottom: 15px;
-}
-
-.hero-text p {
-  max-width: 500px;
-  margin-bottom: 25px;
-}
-
-/* FEATURES */
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 25px;
-  padding: 60px;
-}
-
-.feature-card {
-  padding: 25px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(10px);
-  transition: transform 0.3s;
-}
-
-.feature-card:hover {
-  transform: translateY(-8px);
-}
-
-/* CTA */
-.cta {
-  text-align: center;
-  padding: 80px;
-  background: rgba(255,255,255,0.05);
-}
-
-/* DASHBOARD */
-.dashboard {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-  padding: 40px;
-}
-
-.panel {
-  padding: 25px;
-  border-radius: 14px;
-}
-
-textarea {
-  width: 100%;
-  height: 160px;
-  margin: 12px 0;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-}
-
-.dropdown {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-}
-
-.review {
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-}
-
-.critical { background: #7f1d1d; }
-.high { background: #92400e; }
-.medium { background: #854d0e; }
-
-.code-output {
-  background: #020617;
-  padding: 15px;
-  border-radius: 8px;
-  height: 200px;
-  overflow: auto;
-}
-
-/* AUTH */
-.auth-body {
+.center {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
-.auth-container {
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 60px;
+}
+
+.hero {
+  text-align: center;
+  padding: 120px 20px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
+  padding: 40px;
+}
+
+.feature-card {
+  padding: 20px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.08);
+}
+
+.about {
+  text-align: center;
+  padding: 60px;
+  opacity: .9;
+}
+
+.card {
   width: 360px;
   padding: 30px;
   border-radius: 16px;
+  text-align: center;
 }
 
-.auth-container input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: none;
-}
-
-/* GLASS EFFECT */
 .glass {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(14px);
 }
 
-/* FOOTER */
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px 0;
+}
+
+.big-textarea {
+  height: 350px;
+  font-family: monospace;
+}
+
+.btn {
+  background: linear-gradient(135deg,#2563eb,#38bdf8);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.btn.outline {
+  background: transparent;
+  border: 1px solid #38bdf8;
+}
+
+.full { width: 100%; margin: 8px 0; }
+
+.editor {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 30px;
+  padding: 40px;
+}
+
+.windows {
+  display: grid;
+  gap: 20px;
+}
+
+.window {
+  padding: 15px;
+  border-radius: 14px;
+  min-height: 150px;
+}
+
+.hidden { display: none; }
+
+.list li {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
 footer {
   text-align: center;
   padding: 20px;
-  opacity: 0.7;
-}
-
-.hidden {
-  display: none;
+  opacity: .7;
 }
