@@ -99,6 +99,22 @@
     document.addEventListener('DOMContentLoaded', function () {
       loadUserInfo();
       updateLineNumbers();
+
+      // Tab key handler for code editor
+      const codeInput = document.getElementById('codeInput');
+      codeInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          const value = this.value;
+          // Insert tab character (or use 4 spaces: '    ')
+          this.value = value.substring(0, start) + '\t' + value.substring(end);
+          // Move cursor after the inserted tab
+          this.selectionStart = this.selectionEnd = start + 1;
+          updateLineNumbers();
+        }
+      });
     });
 
     function loadUserInfo() {

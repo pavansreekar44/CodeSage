@@ -1,3 +1,18 @@
 # Environment variables
 .env
-backend/.env
+
+# Virtual environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Database (local development)
+*.db
+
+# IDE
+.vscode/
+.idea/
