@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://codesage-9jqk.onrender.com";
 
 function go(page) {
   window.location.href = page;
@@ -76,7 +76,7 @@ async function reviewCode() {
   `;
 
   try {
-    const res = await fetch("http://127.0.0.1:8000/review", {
+    const res = await fetch(`${API_URL}/review`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -113,7 +113,7 @@ async function rewriteCode() {
 
   try {
     const res = await fetch(
-      `http://127.0.0.1:8000/rewrite/${window.lastReviewId}`,
+      `${API_URL}/rewrite/${window.lastReviewId}`,
       { method: "POST" }
     );
 
@@ -276,7 +276,7 @@ function renderReview(analysis) {
 
 async function loadHistory() {
   try {
-    const res = await fetch("http://127.0.0.1:8000/history");
+    const res = await fetch(`${API_URL}/history`);
     const history = await res.json();
 
     const ul = document.getElementById("history");
